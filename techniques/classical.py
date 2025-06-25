@@ -32,10 +32,6 @@ def get_averaged_word_vector(text, model):
     return np.mean(vectors, axis=0) if vectors else np.zeros(model.vector_size)
 
 def get_answer_classical_nlp(question, documents_dict, method="tfidf", word_embedding_model_name="glove-wiki-gigaword-50"):
-    """
-    Finds the best answer using a specified classical NLP method.
-    Methods: 'tfidf', 'bow', 'word_embedding'.
-    """
     best_answer = {'answer': "No relevant answer found in the documents.", 'confidence': 0.0, 'source_document': None, 'source_chunk': None}
     
     for doc_id, full_text_content in documents_dict.items():

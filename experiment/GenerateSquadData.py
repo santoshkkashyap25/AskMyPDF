@@ -6,9 +6,6 @@ import google.generativeai as genai
 from time import sleep
 from typing import List, Dict, Any
 
-# --- Configuration ---
-
-# Best practice: Load API key from environment variables for security.
 # 1. Get your key from https://aistudio.google.com/app/apikey
 # 2. Set it in your terminal: export GOOGLE_API_KEY='your-key'
 try:
@@ -18,27 +15,13 @@ except TypeError:
     print("Please get a key from Google AI Studio and set it using: export GOOGLE_API_KEY='your-api-key'")
     exit(1)
 
-# The model to use for generation. 'gemini-1.5-flash-latest' is fast and capable.
 MODEL = "gemini-1.5-flash-latest"
 
 # --- Functions ---
 
 def generate_qa_pairs(case_text: str, case_title: str, case_id: str) -> List[Dict[str, Any]]:
-    """
-    Generates question-and-answer pairs for a given legal case text using the Google Gemini API.
-
-    Args:
-        case_text: The full text of the legal case.
-        case_title: The title of the case.
-        case_id: A unique identifier for the case.
-
-    Returns:
-        A list of validated QA pairs in SQuAD format. Returns an empty list on failure.
-    """
     print(f"  - Generating QA pairs for {case_id} with Google Gemini...")
     
-    # The prompt provides context and instructs the model to return a JSON object
-    # containing a list of QA pairs. This is more reliable with Gemini's JSON mode.
     prompt = f"""
     Based on the following legal case text, generate exactly 2 distinct question-and-answer pairs.
     The 'answers' must be an EXACT verbatim quote from the provided text.
@@ -134,13 +117,6 @@ def generate_qa_pairs(case_text: str, case_title: str, case_id: str) -> List[Dic
         return []
 
 def main(input_csv: str, output_json: str):
-    """
-    Main execution function. Reads a CSV, generates QA pairs, and saves them to a JSON file.
-
-    Args:
-        input_csv: Path to the input CSV file.
-        output_json: Path to the output JSON file.
-    """
     print(f"Starting processing...")
     print(f"Input file: {input_csv}")
     print(f"Output file: {output_json}")
