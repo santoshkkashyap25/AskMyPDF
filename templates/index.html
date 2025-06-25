@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document QA System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Document Question Answering</h1>
+            <p>Upload PDFs, add text, and ask a question. Get answers using different NLP techniques.</p>
+        </header>
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <div class="flash-messages">
+              {% for category, message in messages %}
+                <div class="flash {{ category }}">{{ message }}</div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+
+        <main>
+            <form action="/" method="post" enctype="multipart/form-data">
+                
+                <div class="form-section">
+                    <h2>1. Provide Your Documents</h2>
+                    <div class="input-group">
+                        <label for="pdf_files">Upload PDF Files (Multiple)</label>
+                        <input type="file" id="pdf_files" name="pdf_files" multiple accept=".pdf">
+                    </div>
+                    <div class="input-group">
+                         <label for="direct_text">Or Paste Text Directly</label>
+                        <textarea id="direct_text" name="direct_text" rows="8" placeholder="Paste any relevant text here..."></textarea>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2>2. Ask a Question</h2>
+                    <div class="input-group">
+                        <label for="question">Your Question</label>
+                        <input type="text" id="question" name="question" required placeholder="e.g., What are the main findings?">
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2>3. Choose Answering Technique(s)</h2>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" name="techniques" value="tfidf" checked> TF-IDF</label>
+                        <label><input type="checkbox" name="techniques" value="bow"> Bag of Words (BoW)</label>
+                        <label><input type="checkbox" name="techniques" value="word_embedding"> Word Embeddings (GloVe)</label>
+                        <label><input type="checkbox" name="techniques" value="transformer"> Transformer (DistilBERT)</label>
+                        <label class="compare-all"><input type="checkbox" name="techniques" value="compare_all"> <strong>Compare All</strong></label>
+                    </div>
+                </div>
+                
+                <button type="submit" class="submit-btn">Get Answer</button>
+            </form>
+        </main>
+    </div>
+</body>
+</html>

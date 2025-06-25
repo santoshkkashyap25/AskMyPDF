@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+*.env
+.vscode/
+
+# IDEs and Editors
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Operating System Files
+.DS_Store
+Thumbs.db
+
+# Environment variables
+.env
+
+# Uploaded PDFs (if any are stored temporarily)
+/uploads/
+
