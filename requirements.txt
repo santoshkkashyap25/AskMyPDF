@@ -9,3 +9,4 @@ gensim
 torch
 transformers
 sentencepiece
+gunicorn

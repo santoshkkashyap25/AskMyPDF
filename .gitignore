@@ -25,3 +25,6 @@ Thumbs.db
 
 # Uploaded PDFs (if any are stored temporarily)
 /uploads/
+
+/offline_cache
+/assets.py

@@ -6,7 +6,6 @@ from utils import extract_text_from_pdf
 from techniques.classical import get_answer_classical_nlp
 from techniques.transformer import get_best_answer_transformer
 
-# Initialize Flask App
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'a_secure_default_secret_key')
 app.config['UPLOAD_FOLDER'] = 'uploads'
@@ -15,16 +14,11 @@ os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 ALLOWED_EXTENSIONS = {'pdf'}
 
 def allowed_file(filename):
-    """Checks if the file has an allowed extension."""
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    """
-    Handles the main page where users can upload documents,
-    enter text, and ask a question.
-    """
     if request.method == 'POST':
         # --- Form Data Handling ---
         question = request.form.get('question')
@@ -89,5 +83,4 @@ def index():
     return render_template('index.html')
 
 if __name__ == '__main__':
-    # Using threaded=False is important for some NLP models to avoid issues
     app.run(debug=True, threaded=False)

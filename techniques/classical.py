@@ -9,7 +9,7 @@ from utils import preprocess_text_for_vectorization
 # --- Model Loading (with Caching) ---
 word_embedding_model_cache = {}
 
-def load_word_embedding_model(model_name="glove-wiki-gigaword-50"):
+def load_word_embedding_model(model_name="glove-twitter-25"):
     """Loads a pre-trained word embedding model from gensim-data with caching."""
     if model_name not in word_embedding_model_cache:
         try:
@@ -31,7 +31,7 @@ def get_averaged_word_vector(text, model):
     vectors = [model[token] for token in tokens if token in model.key_to_index]
     return np.mean(vectors, axis=0) if vectors else np.zeros(model.vector_size)
 
-def get_answer_classical_nlp(question, documents_dict, method="tfidf", word_embedding_model_name="glove-wiki-gigaword-50"):
+def get_answer_classical_nlp(question, documents_dict, method="tfidf", word_embedding_model_name="glove-twitter-25"):
     best_answer = {'answer': "No relevant answer found in the documents.", 'confidence': 0.0, 'source_document': None, 'source_chunk': None}
     
     for doc_id, full_text_content in documents_dict.items():

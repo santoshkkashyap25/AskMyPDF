@@ -1,32 +1,33 @@
 # techniques/transformer.py
-from transformers import AutoTokenizer, AutoModelForQuestionAnswering, pipeline
+from transformers import pipeline, AutoTokenizer, AutoModelForQuestionAnswering
 
-# --- Model Loading (with Caching) ---
 qa_pipeline_cache = {}
 
-def load_qa_pipeline(model_name="distilbert-base-cased-distilled-squad"):
-    """Loads a pre-trained QA model and tokenizer from Hugging Face with caching."""
+def load_qa_pipeline(model_name="deepset/tinyroberta-squad2"):
     if model_name not in qa_pipeline_cache:
         try:
             print(f"Loading QA pipeline for model: {model_name} (this may take a moment)...")
             tokenizer = AutoTokenizer.from_pretrained(model_name)
             model = AutoModelForQuestionAnswering.from_pretrained(model_name)
-            # Specify device=-1 to force CPU, which is more compatible for deployment environments
-            qa_pipeline_cache[model_name] = pipeline("question-answering", model=model, tokenizer=tokenizer, device=-1)
-            print("QA pipeline loaded successfully on CPU.")
+            qa_pipeline_cache[model_name] = pipeline(
+                "question-answering", model=model, tokenizer=tokenizer, device=-1
+            )
+            qa_pipeline_cache[model_name](
+                question="What is AI?", context="AI is artificial intelligence."
+            )
+            print("QA pipeline loaded and warmed up on CPU.")
         except Exception as e:
             print(f"Error loading QA pipeline '{model_name}': {e}")
             qa_pipeline_cache[model_name] = None
     return qa_pipeline_cache[model_name]
 
-# Pre-load the default model on application start
 load_qa_pipeline()
+
 
 def chunk_text(text, tokenizer, max_chunk_size=384, overlap_size=64):
     """Splits text into overlapping chunks suitable for the model's context window."""
     tokens = tokenizer.encode(text, add_special_tokens=False)
     chunks = []
-    # The loop should step by the chunk size minus the overlap
     for i in range(0, len(tokens), max_chunk_size - overlap_size):
         chunk_tokens = tokens[i : i + max_chunk_size]
         # Decode tokens back to a string
@@ -34,10 +35,6 @@ def chunk_text(text, tokenizer, max_chunk_size=384, overlap_size=64):
     return chunks
 
 def get_best_answer_transformer(question, documents_dict, confidence_threshold=0.05):
-    """
-    Finds the best answer using a Transformer model.
-    It handles large documents by chunking them.
-    """
     qa_pipeline = load_qa_pipeline()
     if not qa_pipeline:
         return {'answer': "Transformer model is currently unavailable.", 'confidence': 0.0, 'source_document': None, 'source_chunk': None}
@@ -49,15 +46,12 @@ def get_best_answer_transformer(question, documents_dict, confidence_threshold=0
         if not full_text_content or not full_text_content.strip():
             continue
         
-        # Determine if the document needs to be chunked
-        # The question and context are combined, so we check their combined length
         if len(tokenizer.encode(question, full_text_content)) < tokenizer.model_max_length:
             contexts = [full_text_content] # Process the whole document as one context
         else:
             print(f"Document '{doc_id}' is too long, chunking...")
             contexts = chunk_text(full_text_content, tokenizer)
         
-        # Run QA pipeline on the document or its chunks
         for context_chunk in contexts:
             if not context_chunk.strip(): continue
             try:
