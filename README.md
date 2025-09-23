@@ -47,7 +47,7 @@ This web application provides a platform for performing Question Answering (QA) 
 |       |-- style.css       # Stylesheet for the application
 ```
 
-## Setup and Local Development
+<!-- ## Setup and Local Development
 
 **Prerequisites**:
 -   Python 3.8+
@@ -86,3 +86,7 @@ This web application provides a platform for performing Question Answering (QA) 
 5.  Open your browser and navigate to `http://127.0.0.1:5000`.
 
 
+ -->
+ ## Other Works
+
+[Visit the App] : https://transnlp.streamlit.app/
