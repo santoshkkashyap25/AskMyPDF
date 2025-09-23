@@ -4,32 +4,32 @@ import re
 import PyPDF2
 import pdfplumber
 import nltk
+import os
 
 # --- NLTK Data Check ---
 def download_nltk_data_if_needed():
-    """Checks for and downloads required NLTK data."""
-    try:
-        nltk.data.find('tokenizers/punkt')
-    except nltk.downloader.DownloadError:
-        print("Downloading NLTK 'punkt' tokenizer...")
-        nltk.download('punkt')
-        print("'punkt' downloaded.")
-    try:
-        nltk.data.find('corpora/stopwords')
-    except nltk.downloader.DownloadError:
-        print("Downloading NLTK 'stopwords'...")
-        nltk.download('stopwords')
-        print("'stopwords' downloaded.")
+    """Checks for and downloads required NLTK data at runtime."""
+    nltk_data_path = "/tmp/nltk_data"
+    os.environ["NLTK_DATA"] = nltk_data_path  # Ensure NLTK knows where to look
+
+    # List of required NLTK resources
+    resources = ["tokenizers/punkt", "corpora/stopwords"]
+
+    for resource in resources:
+        try:
+            nltk.data.find(resource)
+        except LookupError:
+            name = resource.split("/")[-1]
+            print(f"NLTK '{name}' not found. Downloading...")
+            nltk.download(name, download_dir=nltk_data_path)
+            print(f"NLTK '{name}' downloaded successfully.")
 
 # Run the check once on startup
 download_nltk_data_if_needed()
 
+
 # --- Text Extraction ---
 def extract_text_from_pdf(file_bytes, filename="<file>"):
-    """
-    Extracts text from a PDF file's bytes.
-    Tries pdfplumber first, falls back to PyPDF2.
-    """
     text = ""
     try:
         # Try with pdfplumber first as it often gives better layout parsing
@@ -49,9 +49,10 @@ def extract_text_from_pdf(file_bytes, filename="<file>"):
             print(f"Successfully extracted text from '{filename}' using PyPDF2.")
     except Exception as e:
         print(f"PyPDF2 also failed for '{filename}': {e}")
-        return "" # Return empty if both fail
-        
+        return ""  # Return empty if both fail
+
     return text
+
 
 # --- Text Preprocessing ---
 def preprocess_text_for_vectorization(text):
