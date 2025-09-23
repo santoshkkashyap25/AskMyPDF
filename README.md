@@ -35,8 +35,7 @@ This web application provides a platform for performing Question Answering (QA) 
 |-- utils.py                # Utility functions (PDF extraction, text cleaning)
 |-- requirements.txt        # Python dependencies
 |-- Procfile                # Deployment configuration for Render/Heroku
-|-- /techniques             # Python package for all NLP methods
-|   |-- init.py       
+|-- /techniques             # Python package for all NLP methods      
 |   |-- classical.py        # Logic for TF-IDF, BoW, Word Embeddings
 |   |-- transformer.py      # Logic for Transformer-based QA (DistilBERT)
 |-- /templates              # HTML files
