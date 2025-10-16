@@ -1,1 +1,1 @@
-web: gunicorn --worker-tmp-dir /dev/shm app:app --preload
+web: gunicorn --preload --workers=2 --threads=2 --timeout=120 --bind=0.0.0.0:$PORT app:app
